@@ -16,7 +16,7 @@ int IsEditingMode = 0;// variable for check the mode
 void setup() {
   Set_LCD LCD(1, 2, 4, 5, 6, 7);
   DS3232Begin();
-  setTime(12, 10, 16, 3, 13, 3, 21);
+  setTime(12, 3, 3, 3, 13, 3, 21);
   pinMode(8, INPUT); pinMode(9, INPUT); pinMode(10, INPUT); pinMode(11, INPUT);
 
 }
@@ -72,6 +72,9 @@ void loop() {
   else{
   if (alarm_min == minutes and alarm_hour == hours){
     digitalWrite(13,HIGH);delay(100);digitalWrite(13,LOW);delay(100);
+  }
+  if (alarm_button == 1){
+    digitalWrite(13,LOW);
   }
   if (mode == HIGH) {
     IsEditingMode = 1;
