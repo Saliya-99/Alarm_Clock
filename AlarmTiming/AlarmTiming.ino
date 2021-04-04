@@ -3,16 +3,14 @@
 Set_LCD LCD(1, 2, 4, 5, 6, 7);
 
 
-int mode_status = 0;
-int alarm_min = 0;
+int mode_status = 0; // variable for set the time 
+int alarm_min = 0;   // variables for set the alarm
 int alarm_hour = 0;
 int alarm_mode = 0;
 int alarm_time = 0;
 int alarm_stop = 0;
-//int alarm_day = 0;
-//int alarm_months = 0;
-//int inc_years = 0;
-int IsEditingMode = 0;
+
+int IsEditingMode = 0;// variable for check the mode
 
 
 void setup() {
@@ -29,13 +27,14 @@ void loop() {
   readTime(&seconds, &minutes, &hours, &dayofweek, &day, &month, &year );
 
   /////////////////////////////////////////////////////////////
-  bool mode = digitalRead(8);
+  bool mode = digitalRead(8);               //// button inputs
   bool increment = digitalRead(9);
   bool decrement = digitalRead(10);
   bool set_button = digitalRead(11);
   bool alarm_button = digitalRead(12);
   /////////////////////////////////////////////////////////////
   //add mode button, this button chose the editing variable, minutes,ours or etc.
+  ///////////////////////////////////////////////////////////////
   if (alarm_button == 1){
     alarm_mode = 1;
     alarm_stop = 1;
@@ -69,6 +68,7 @@ void loop() {
     }
     delay(600);
   }
+  //////////////////////////////////////////////////////////////////////
   else{
   if (alarm_min == minutes and alarm_hour == hours){
     digitalWrite(13,HIGH);delay(100);digitalWrite(13,LOW);delay(100);

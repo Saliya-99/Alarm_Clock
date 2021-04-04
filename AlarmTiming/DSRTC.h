@@ -123,7 +123,7 @@ void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofwe
   LCD.clear_all();
   delay(100);
 }
-
+// dispaly alarm time and alarm time setting
 void alarm_disp(Set_LCD LCD,int minutes, int hours){
   LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);LCD.DISP(" ");
   
