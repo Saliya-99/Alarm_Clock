@@ -6,7 +6,11 @@ Set_LCD LCD(1, 2, 4, 5, 6, 7);
 int mode_status = 0;
 int inc_min = 0;
 int inc_hours = 0;
+int inc_days = 0;
+int inc_months = 0;
+int inc_years = 0;
 int IsEditingMode = 0;
+
 
 void setup() {
   Set_LCD LCD(1, 2, 4, 5, 6, 7);
@@ -27,66 +31,109 @@ void loop() {
   bool decrement = digitalRead(10);
   bool set_button = digitalRead(11);
   /////////////////////////////////////////////////////////////
-
+  //add mode button, this button chose the editing variable, minutes,ours or etc.
   if (mode == HIGH) {
     IsEditingMode = 1;
-    if (mode_status == 2) {
+    if (mode_status == 5) {
       mode_status = 0;
     }
     mode_status += 1;// selected minute or hours
-
- /*  if (mode_status == 1) {
-      LCD.clear_all();
-      while (1) {
-        LCD.DISP("MIN: "); LCD.DISP(minutes+inc_min);delay(1000); LCD.clear_all(); delay(1000);
-        if (mode or set_button){
-          break;
-        }
-      }
-      
-
   }
 
-  if (mode_status == 2) {
-      LCD.clear_all();
-      while (1) {
-        LCD.DISP("HOURS:"); LCD.DISP(hours+inc_hours);delay(100); LCD.clear_all(); delay(100);
-        if (mode or set_button){
-          break;
-        }
-      }
-    }*/
-  
-  }
+  //add increment button
   if (increment == HIGH) {
     if (mode_status == 1) {
-      inc_min += 1;
+
+      minutes += 1;
+      if (minutes >= 60) {
+        minutes = 0;
+      }
     }
     if (mode_status == 2) {
-      inc_hours += 1;
+
+      hours += 1;
+      if (hours >= 24) {
+        hours = 0;
+      }
     }
-    DisplayTimeBlink(LCD, seconds, minutes+inc_min, hours+inc_hours, dayofweek, day, month, year );
-  }
+    if (mode_status == 3) {
+
+      day += 1;
+      if (day > 30) {
+        day = 1;
+      }
+    }
+
+    if (mode_status == 4) {
+
+      month += 1;
+      if (month > 12) {
+        month = 1;
+      }
+    }
+
+    if (mode_status == 5) {
+      year += 1;
+    }
   
+  DisplayTimeBlink(LCD, seconds, minutes, hours, dayofweek, day, month, year );
+  setTime(seconds, minutes, hours, dayofweek, day, month, year);
+  }
+
+  //add decrement button
+
+  if (decrement == HIGH) {
+    if (mode_status == 1) {
+
+      minutes -= 1;
+      if (minutes < 0) {
+        minutes = 59;
+      }
+    }
+    if (mode_status == 2) {
+
+      hours -= 1;
+      if (hours < 0) {
+        hours = 23;
+      }
+    }
+    if (mode_status == 3) {
+
+      day -= 1;
+      if (day < 1) {
+        day = 30;
+      }
+    }
+
+    if (mode_status == 4) {
+
+      month -= 1;
+      if (month < 1) {
+        month = 12;
+      }
+    }
+
+    if (mode_status == 5) {
+      year += 1;
+    }
+  DisplayTimeBlink(LCD, seconds, minutes, hours, dayofweek, day, month, year );
+  setTime(seconds, minutes, hours, dayofweek, day, month, year);
+  }
+
+  //set the new time in normal mode
   if (set_button == HIGH) {
-    setTime(00, minutes + inc_min, hours + inc_hours, 0, 13, 3, 21);
-    inc_min = 0;
-    inc_hours = 0;
+    setTime(00, minutes, hours, dayofweek, day, month, year);
+
     IsEditingMode = 0;
+    readTime(&seconds, &minutes, &hours, &dayofweek, &day, &month, &year );
+
   }
 
-  if(IsEditingMode ==0){
-  DisplayTime(LCD, seconds, minutes+inc_hours, hours+inc_hours, dayofweek, day, month, year );}
-  
-  else{
-    DisplayTimeBlink(LCD, seconds, minutes+inc_min, hours+inc_hours, dayofweek, day, month, year );
+  if (IsEditingMode == 0) {
+    DisplayTime(LCD, seconds, minutes, hours, dayofweek, day, month, year);
   }
 
-
-
-  /////////////////////////////////////////////////////////
-
-
-
-
-}
+  else {
+    DisplayTimeBlink(LCD, seconds, minutes, hours, dayofweek, day, month, year );
+  }
+  }

@@ -106,11 +106,13 @@ void DisplayTime(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,in
   
   delay(1000);
   LCD.clear_all();
-  delay(1);
+  
 }
 
 
 void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,int day,int month,int year){
+
+
   LCD.DISP(seconds);LCD.DISP(":");LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);
   
   LCD.DISP(" ");LCD.DISP(daysOfweek[dayofweek]);LCD.DISP(" ");
@@ -121,3 +123,7 @@ void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofwe
   LCD.clear_all();
   delay(100);
 }
+
+/*void limitNum(int minutes, int hours, int dayofweek, int days, int months, int years){
+  
+}*/
