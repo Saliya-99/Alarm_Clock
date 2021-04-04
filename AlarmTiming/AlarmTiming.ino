@@ -4,11 +4,14 @@ Set_LCD LCD(1, 2, 4, 5, 6, 7);
 
 
 int mode_status = 0;
-int inc_min = 0;
-int inc_hours = 0;
-int inc_days = 0;
-int inc_months = 0;
-int inc_years = 0;
+int alarm_min = 0;
+int alarm_hour = 0;
+int alarm_mode = 0;
+int alarm_time = 0;
+int alarm_stop = 0;
+//int alarm_day = 0;
+//int alarm_months = 0;
+//int inc_years = 0;
 int IsEditingMode = 0;
 
 
@@ -30,8 +33,46 @@ void loop() {
   bool increment = digitalRead(9);
   bool decrement = digitalRead(10);
   bool set_button = digitalRead(11);
+  bool alarm_button = digitalRead(12);
   /////////////////////////////////////////////////////////////
   //add mode button, this button chose the editing variable, minutes,ours or etc.
+  if (alarm_button == 1){
+    alarm_mode = 1;
+    alarm_stop = 1;
+    }
+  if (alarm_mode == 1){
+    
+    LCD.clear_all();
+    alarm_disp(LCD,alarm_min,alarm_hour);
+
+    if (mode==HIGH){
+      alarm_time = not alarm_time;
+    }
+
+    if (increment == HIGH){
+      if (alarm_time == 0){
+        alarm_min += 1;
+        if (alarm_min >59){
+          alarm_min = 0;
+        }
+      }
+      if (alarm_time==1){
+        alarm_hour +=1;
+        if (alarm_hour >23){
+          alarm_hour = 0;
+        }
+      }
+    }
+    if (set_button == 1 and alarm_stop == 1){
+      alarm_mode = 0;
+      alarm_stop = 0;
+    }
+    delay(600);
+  }
+  else{
+  if (alarm_min == minutes and alarm_hour == hours){
+    digitalWrite(13,HIGH);delay(100);digitalWrite(13,LOW);delay(100);
+  }
   if (mode == HIGH) {
     IsEditingMode = 1;
     if (mode_status == 5) {
@@ -59,9 +100,15 @@ void loop() {
     if (mode_status == 3) {
 
       day += 1;
-      if (day > 30) {
+      if (day > 31) {
         day = 1;
       }
+
+      dayofweek +=1;
+      if(dayofweek>6){
+        dayofweek = 0;
+      }
+      
     }
 
     if (mode_status == 4) {
@@ -101,8 +148,14 @@ void loop() {
 
       day -= 1;
       if (day < 1) {
-        day = 30;
+        day = 31;
       }
+
+      dayofweek +=1;
+      if(dayofweek>6){
+        dayofweek = 0;
+      }
+
     }
 
     if (mode_status == 4) {
@@ -135,5 +188,6 @@ void loop() {
 
   else {
     DisplayTimeBlink(LCD, seconds, minutes, hours, dayofweek, day, month, year );
+  }
   }
   }

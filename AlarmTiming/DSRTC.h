@@ -8,7 +8,7 @@ class Set_LCD{
   private:
   int RS;
   int E;
-  int pin_1;
+  int pin_1;//lcd display pins
   int pin_2;
   int pin_3;
   int pin_4;
@@ -54,7 +54,7 @@ class Set_LCD{
     }
     
 };
-
+// binary coded decimal and decimal conversion
 byte BCDtoDEC(byte value){
   return (value/16*10 +value%16); 
 }
@@ -62,13 +62,13 @@ byte BCDtoDEC(byte value){
 byte DECtoBCD(byte value){
   return (value/10*16 +value%10); 
 }
-
+// begin 
 void DS3232Begin(){
 
   Wire.begin();
   
 }
-
+// set the time to DS3232
 void setTime(byte seconds,byte minutes, byte hours,byte dayofweek, byte day, byte month, byte year ){
   Wire.beginTransmission(ADDRESS);
   Wire.write(0);
@@ -82,7 +82,7 @@ void setTime(byte seconds,byte minutes, byte hours,byte dayofweek, byte day, byt
   Wire.endTransmission();
   
 }
-
+// read time updates from DS3232
 void readTime(byte* seconds,byte* minutes, byte* hours,byte* dayofweek, byte* day, byte* month, byte* year ){
   Wire.beginTransmission(ADDRESS);
   Wire.write(0);
@@ -96,7 +96,7 @@ void readTime(byte* seconds,byte* minutes, byte* hours,byte* dayofweek, byte* da
   *month = BCDtoDEC(Wire.read());
   *year = BCDtoDEC(Wire.read());
 }
-
+// display function to lcd dispaly
 void DisplayTime(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,int day,int month,int year){
   LCD.DISP(seconds);LCD.DISP(":");LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);
   
@@ -104,12 +104,12 @@ void DisplayTime(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,in
   LCD.set_pos(0,1);
   LCD.DISP(day);LCD.DISP("/");LCD.DISP(month);LCD.DISP("/");LCD.DISP(year);
   
-  delay(1000);
+  delay(995);
   LCD.clear_all();
   
 }
 
-
+// time dispalying with a blink
 void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,int day,int month,int year){
 
 
@@ -124,6 +124,7 @@ void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofwe
   delay(100);
 }
 
-/*void limitNum(int minutes, int hours, int dayofweek, int days, int months, int years){
+void alarm_disp(Set_LCD LCD,int minutes, int hours){
+  LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);LCD.DISP(" ");
   
-}*/
+}
