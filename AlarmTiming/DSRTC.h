@@ -1,6 +1,8 @@
 #include <Wire.h>
 #include<LiquidCrystal.h>
 LiquidCrystal *object;
+#define ADDRESS 0x68
+String daysOfweek[7] = {"SUN","MON","TUE","WED","THU","FRI","SAT"};
 
 class Set_LCD{
   private:
@@ -26,10 +28,10 @@ class Set_LCD{
       LCD.begin(16,2);
     }
 
-    void DISP(char word[]){
+    void DISP(String word_1){
       
       LiquidCrystal LCD = *object;
-      LCD.print(word);
+      LCD.print(word_1);
       check += 1;
     }
 
@@ -52,3 +54,70 @@ class Set_LCD{
     }
     
 };
+
+byte BCDtoDEC(byte value){
+  return (value/16*10 +value%16); 
+}
+
+byte DECtoBCD(byte value){
+  return (value/10*16 +value%10); 
+}
+
+void DS3232Begin(){
+
+  Wire.begin();
+  
+}
+
+void setTime(byte seconds,byte minutes, byte hours,byte dayofweek, byte day, byte month, byte year ){
+  Wire.beginTransmission(ADDRESS);
+  Wire.write(0);
+  Wire.write(DECtoBCD(seconds));
+  Wire.write(DECtoBCD(minutes));
+  Wire.write((DECtoBCD(hours)));
+  Wire.write(DECtoBCD(dayofweek));
+  Wire.write(DECtoBCD(day));
+  Wire.write(DECtoBCD(month));
+  Wire.write(DECtoBCD(year));
+  Wire.endTransmission();
+  
+}
+
+void readTime(byte* seconds,byte* minutes, byte* hours,byte* dayofweek, byte* day, byte* month, byte* year ){
+  Wire.beginTransmission(ADDRESS);
+  Wire.write(0);
+  Wire.endTransmission();
+  Wire.requestFrom(ADDRESS, 7);
+  *seconds = BCDtoDEC(Wire.read() & 0x7F);
+  *minutes = BCDtoDEC(Wire.read());
+  *hours = BCDtoDEC(Wire.read() & 0x3F);
+  *dayofweek = BCDtoDEC(Wire.read());
+  *day = BCDtoDEC(Wire.read());
+  *month = BCDtoDEC(Wire.read());
+  *year = BCDtoDEC(Wire.read());
+}
+
+void DisplayTime(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,int day,int month,int year){
+  LCD.DISP(seconds);LCD.DISP(":");LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);
+  
+  LCD.DISP(" ");LCD.DISP(daysOfweek[dayofweek]);LCD.DISP(" ");
+  LCD.set_pos(0,1);
+  LCD.DISP(day);LCD.DISP("/");LCD.DISP(month);LCD.DISP("/");LCD.DISP(year);
+  
+  delay(1000);
+  LCD.clear_all();
+  delay(1);
+}
+
+
+void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,int day,int month,int year){
+  LCD.DISP(seconds);LCD.DISP(":");LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);
+  
+  LCD.DISP(" ");LCD.DISP(daysOfweek[dayofweek]);LCD.DISP(" ");
+  LCD.set_pos(0,1);
+  LCD.DISP(day);LCD.DISP("/");LCD.DISP(month);LCD.DISP("/");LCD.DISP(year);
+  
+  delay(100);
+  LCD.clear_all();
+  delay(100);
+}
