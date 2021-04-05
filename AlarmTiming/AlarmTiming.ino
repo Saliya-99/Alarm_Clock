@@ -4,12 +4,14 @@ Set_LCD LCD(1, 2, 4, 5, 6, 7);
 
 
 int mode_status = 0; // variable for set the time
-int alarm_min = 0;   // variables for set the alarm
-int alarm_hour = 0;
+int alarm_min[5] = {1, 0, 0, 0, 0}; // variables for set the alarm
+int alarm_hour[5] = {0, 0, 0, 0, 0};
 int alarm_mode = 0;
 int alarm_time = 0;
 int alarm_stop = 0;
-int start_alarm = 0;
+int alarm_slot = 0;
+int alarm_select = 0;
+
 int IsEditingMode = 0;// variable for check the mode
 
 
@@ -41,58 +43,83 @@ void loop() {
   }
   if (alarm_mode == 1) {
 
-    LCD.clear_all();
-    alarm_disp(LCD, alarm_min, alarm_hour);
+    if (alarm_select == 0) {//select the alarm slot among 5 slots
 
-    if (mode == HIGH) {
-      alarm_time = not alarm_time;
-    }
+      //LCD.clear_all();
+      slot_disp(LCD, alarm_slot);
+      if (increment == HIGH and alarm_select == 0) {
 
-    if (increment == HIGH) {
-      if (alarm_time == 0) {
-        alarm_min += 1;
-        if (alarm_min > 59) {
-          alarm_min = 0;
+        alarm_slot += 1;
+        if (alarm_slot > 4) {
+          alarm_slot = 0;
         }
+
       }
-      if (alarm_time == 1) {
-        alarm_hour += 1;
-        if (alarm_hour > 23) {
-          alarm_hour = 0;
-        }
+      if (set_button == 1 and alarm_select == 0) {
+        alarm_select = not alarm_select;
       }
     }
 
-    if (decrement == HIGH) {
-      if (alarm_time == 0) {
-        alarm_min -= 1;
-        if (alarm_min < 0) {
-          alarm_min = 59;
-        }
-      }
-      if (alarm_time == 1) {
-        alarm_hour -= 1;
-        if (alarm_hour <0) {
-          alarm_hour = 23;
-        }
-      }
-    }
-
-    if (set_button == 1 and alarm_stop == 1) {
-      alarm_mode = 0;
-      alarm_stop = 0;
+   else {
       LCD.clear_all();
+      alarm_disp(LCD, alarm_min[alarm_slot], alarm_hour[alarm_slot]);
+
+      if (mode == HIGH) {
+        alarm_time = not alarm_time;
+      }
+     
+      if (increment == HIGH) {
+        if (alarm_time == 0) {
+          alarm_min[alarm_slot] += 1;
+          if (alarm_min[alarm_slot] > 59) {
+            alarm_min[alarm_slot] = 0;
+          }
+        }
+        if (alarm_time == 1) {
+          alarm_hour[alarm_slot] += 1;
+          if (alarm_hour[alarm_slot] > 23) {
+            alarm_hour[alarm_slot] = 0;
+          }
+        }
+      }
+
+      if (decrement == HIGH) {
+        if (alarm_time == 0) {
+          alarm_min[alarm_slot] -= 1;
+          if (alarm_min[alarm_slot] < 0) {
+            alarm_min[alarm_slot] = 59;
+          }
+        }
+        if (alarm_time == 1) {
+          alarm_hour[alarm_slot] -= 1;
+          if (alarm_hour[alarm_slot] < 0) {
+            alarm_hour[alarm_slot] = 23;
+          }
+        }
+      }
+
+      if (set_button == 1 and alarm_stop == 1) {
+        alarm_mode = 0;
+        alarm_stop = 0;
+        LCD.clear_all();
+        alarm_select = not alarm_select;
+      }
+      delay(300);
     }
-    delay(600);
   }
   //////////////////////////////////////////////////////////////////////
 
   else {
 
-    if (alarm_min == minutes and alarm_hour == hours) { // blinking the LED when time come up
-      start_alarm = 1;
-      digitalWrite(13, HIGH); delay(100); digitalWrite(13, LOW); delay(100);
+    for(int slot=0;slot<5;slot++){
+  
+    if (alarm_min[slot] == minutes and alarm_hour[slot] == hours ) { // blinking the LED when time come up
+
+      digitalWrite(13, HIGH); delay(50); digitalWrite(13, LOW); delay(50);
     }
+    }
+
+
 
     if (mode == HIGH) {
       IsEditingMode = 1;

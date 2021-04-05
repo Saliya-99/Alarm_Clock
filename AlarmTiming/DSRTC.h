@@ -127,4 +127,11 @@ void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofwe
 void alarm_disp(Set_LCD LCD,int minutes, int hours){
   LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);LCD.DISP(" ");
   
+  
+}
+
+void slot_disp(Set_LCD LCD,int slot){
+    //LCD.DISP("Select_slot(0-4)");
+    LCD.DISP(" "); LCD.DISP(slot);delay(100);LCD.clear_all();
+    delay(100);
 }
