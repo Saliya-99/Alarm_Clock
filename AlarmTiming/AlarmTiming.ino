@@ -64,7 +64,7 @@ void loop() {
       LCD.clear_all();
       alarm_disp(LCD, alarm_min[alarm_slot], alarm_hour[alarm_slot]);
 
-      if (mode == HIGH) {
+      if (mode == HIGH) {//edit the chosen time slot
         alarm_time = not alarm_time;
       }
      
@@ -113,13 +113,11 @@ void loop() {
 
     for(int slot=0;slot<5;slot++){
   
-    if (alarm_min[slot] == minutes and alarm_hour[slot] == hours ) { // blinking the LED when time come up
+    if (alarm_min[slot] == minutes and alarm_hour[slot] == hours ) { // blinking the LED when alarm time come up
 
       digitalWrite(13, HIGH); delay(50); digitalWrite(13, LOW); delay(50);
     }
     }
-
-
 
     if (mode == HIGH) {
       IsEditingMode = 1;
@@ -222,7 +220,7 @@ void loop() {
     }
 
     //set the new time in normal mode
-    if (set_button == HIGH) {
+    if (set_button == HIGH and IsEditingMode == 1) {
       setTime(00, minutes, hours, dayofweek, day, month, year);
 
       IsEditingMode = 0;
