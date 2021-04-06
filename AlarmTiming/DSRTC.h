@@ -104,7 +104,7 @@ void DisplayTime(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,in
   LCD.set_pos(0,1);
   LCD.DISP(day);LCD.DISP("/");LCD.DISP(month);LCD.DISP("/");LCD.DISP(year);
   
-  delay(995);
+  delay(600);
   LCD.clear_all();
   
 }
@@ -124,7 +124,9 @@ void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofwe
   delay(100);
 }
 // dispaly alarm time and alarm time setting
+
 void alarm_disp(Set_LCD LCD,int minutes, int hours){
+  //LCD.DISP("set alarm");
   LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);LCD.DISP(" ");
   
   

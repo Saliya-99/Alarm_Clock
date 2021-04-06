@@ -3,14 +3,16 @@
 Set_LCD LCD(1, 2, 4, 5, 6, 7);
 
 
-int mode_status = 0; // variable for set the time
+int mode_status = 0; // variable for set mode to editing mode
 int alarm_min[5] = {1, 0, 0, 0, 0}; // variables for set the alarm
-int alarm_hour[5] = {0, 0, 0, 0, 0};
-int alarm_mode = 0;
-int alarm_time = 0;
-int alarm_stop = 0;
-int alarm_slot = 0;
-int alarm_select = 0;
+int alarm_hour[5] = {0, 0, 0, 0, 0};//  variables for set the alarm
+int manual_stop[5] = {1,1,1,1,1};
+int current_alarm;
+int alarm_mode = 0;// set the mode to alarm setting mode
+int alarm_time = 0;// variable for set the alrm editing feature to min or hours
+int alarm_stop = 0;//differentiate set button function according to the current mode 
+int alarm_slot = 0;// slot among 5 slots
+int alarm_select = 0;// editing alrm
 
 int IsEditingMode = 0;// variable for check the mode
 
@@ -18,7 +20,7 @@ int IsEditingMode = 0;// variable for check the mode
 void setup() {
   Set_LCD LCD(1, 2, 4, 5, 6, 7);
   DS3232Begin();
-  setTime(12, 3, 3, 3, 13, 3, 21);
+  setTime(0, 4, 3, 3, 7, 4, 21);
   pinMode(8, INPUT); pinMode(9, INPUT); pinMode(10, INPUT); pinMode(11, INPUT);
 
 }
@@ -60,14 +62,14 @@ void loop() {
       }
     }
 
-   else {
+    else {
       LCD.clear_all();
       alarm_disp(LCD, alarm_min[alarm_slot], alarm_hour[alarm_slot]);
 
       if (mode == HIGH) {//edit the chosen time slot
         alarm_time = not alarm_time;
       }
-     
+
       if (increment == HIGH) {
         if (alarm_time == 0) {
           alarm_min[alarm_slot] += 1;
@@ -111,13 +113,18 @@ void loop() {
 
   else {
 
-    for(int slot=0;slot<5;slot++){
-  
-    if (alarm_min[slot] == minutes and alarm_hour[slot] == hours ) { // blinking the LED when alarm time come up
+    for (int slot = 0; slot < 5; slot++) {
 
-      digitalWrite(13, HIGH); delay(50); digitalWrite(13, LOW); delay(50);
+      if (alarm_min[slot] == minutes and alarm_hour[slot] == hours and manual_stop[slot] == 1 ) {// blinking the LED when alarm time come up
+        current_alarm = slot;
+
+        digitalWrite(13, HIGH); delay(50); digitalWrite(13, LOW); delay(50);
+      }
     }
-    }
+
+  
+
+    
 
     if (mode == HIGH) {
       IsEditingMode = 1;
@@ -151,7 +158,7 @@ void loop() {
         }
 
         dayofweek += 1;
-        if (dayofweek > 6) { //set the day of weel limit
+        if (dayofweek > 6) { //set the day of week limit
           dayofweek = 0;
         }
 
@@ -201,7 +208,6 @@ void loop() {
         if (dayofweek < 0) {
           dayofweek = 6;
         }
-
       }
 
       if (mode_status == 4) {
