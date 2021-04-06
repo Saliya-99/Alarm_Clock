@@ -104,7 +104,7 @@ void DisplayTime(Set_LCD LCD, int seconds,int minutes,int hours,int dayofweek,in
   LCD.set_pos(0,1);
   LCD.DISP(day);LCD.DISP("/");LCD.DISP(month);LCD.DISP("/");LCD.DISP(year);
   
-  delay(600);
+  delay(500);
   LCD.clear_all();
   
 }
