@@ -3,6 +3,8 @@
 LiquidCrystal *object;
 #define ADDRESS 0x68
 String daysOfweek[7] = {"SUN","MON","TUE","WED","THU","FRI","SAT"};
+String Edit_1 = "Select the slot";
+String Edit_2 = "set the alarm(min:hour)";
 
 class Set_LCD{
   private:
@@ -59,7 +61,7 @@ byte BCDtoDEC(byte value){
   return (value/16*10 +value%16); 
 }
 
-byte DECtoBCD(byte value){
+byte DECtoBCD(byte value){ // conversion between BCD and Decimal
   return (value/10*16 +value%10); 
 }
 // begin 
@@ -126,14 +128,16 @@ void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofwe
 // dispaly alarm time and alarm time setting
 
 void alarm_disp(Set_LCD LCD,int minutes, int hours){
-  //LCD.DISP("set alarm");
+  LCD.DISP("S");LCD.DISP("E");LCD.DISP("T");LCD.DISP(":");LCD.DISP(" ");
+  
   LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);LCD.DISP(" ");
   
   
 }
 
 void slot_disp(Set_LCD LCD,int slot){
-    //LCD.DISP("Select_slot(0-4)");
+    LCD.DISP("S");LCD.DISP("L");LCD.DISP("O");LCD.DISP("T");
+    
     LCD.DISP(" "); LCD.DISP(slot);delay(100);LCD.clear_all();
     delay(100);
 }

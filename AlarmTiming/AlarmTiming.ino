@@ -21,7 +21,7 @@ int IsEditingMode = 0;// variable for check the mode
 void setup() {
   Set_LCD LCD(1, 2, 4, 5, 6, 7);
   DS3232Begin();
-  setTime(0, 1, 0, 4, 7, 4, 21);
+  setTime(0, 1, 0, 3, 7, 4, 21);
   pinMode(8, INPUT); pinMode(9, INPUT); pinMode(10, INPUT); pinMode(11, INPUT);
 
 }
@@ -183,6 +183,9 @@ void loop() {
 
       if (mode_status == 5) {//year editing
         year += 1;
+        if(year>99){
+          year = 0;
+        }
       }
 
       DisplayTimeBlink(LCD, seconds, minutes, hours, dayofweek, day, month, year );
@@ -229,6 +232,9 @@ void loop() {
 
       if (mode_status == 5) {
         year -= 1;
+        if(year <0){
+          year = 99;
+        }
       }
       DisplayTimeBlink(LCD, seconds, minutes, hours, dayofweek, day, month, year );
       setTime(seconds, minutes, hours, dayofweek, day, month, year);//set the new time to RTC
