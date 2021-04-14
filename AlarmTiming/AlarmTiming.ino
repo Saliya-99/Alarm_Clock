@@ -108,7 +108,7 @@ void loop() {
 
       if (set_button == 1 and alarm_stop == 1) {  //set the selected alarm slot to the value which is chosen
         alarm_mode = 0;// leave from the alarm mode to normal time mode
-        alarm_stop = 0;// set button function dedicate to alarm set function  
+        alarm_stop = 0;// set button  dedicate to alarm set function  
         LCD.clear_all();
         alarm_select = not alarm_select;// leaving from alarm mode
         manual_stop[alarm_slot] = 1;// alarm is set, can stop manually when the alrm is blinking
