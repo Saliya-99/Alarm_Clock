@@ -4,14 +4,15 @@ Set_LCD LCD(1, 2, 4, 5, 6, 7);
 
 
 int mode_status = 0; // variable for set mode to editing mode
-int alarm_min[5] = {100, 100, 100, 100, 100}; // variables for set the alarm
-int alarm_hour[5] = {100, 100, 100, 100, 100};//  variables for set the alarm
-int manual_stop[5] = {1,1,1,1,1};
+int alarm_min[5] = {0, 0, 0, 0, 0}; // variables for set the alarm
+int alarm_hour[5] = {0, 0, 0, 0, 0};//  variables for set the alarm
+int init_alarm[5] = {0, 0, 0, 0, 0};
+int manual_stop[5] = {1, 1, 1, 1, 1};
 int current_alarm;
-int isalarmblinking = 0;
+int isalarmblinking = 0;// use for dedicate alarm button to alarm settings or to alarm stopping
 int alarm_mode = 0;// set the mode to alarm setting mode
 int alarm_time = 0;// variable for set the alrm editing feature to min or hours
-int alarm_stop = 0;//differentiate set button function according to the current mode 
+int alarm_stop = 0;//differentiate set button function according to the current mode
 int alarm_slot = 0;// slot among 5 slots
 int alarm_select = 0;// editing alrm
 
@@ -21,7 +22,7 @@ int IsEditingMode = 0;// variable for check the mode
 void setup() {
   Set_LCD LCD(1, 2, 4, 5, 6, 7);
   DS3232Begin();
-  setTime(0, 1, 0, 3, 7, 4, 21);
+  setTime(0, 0, 0, 3, 7, 4, 21);
   pinMode(8, INPUT); pinMode(9, INPUT); pinMode(10, INPUT); pinMode(11, INPUT);
 
 }
@@ -31,27 +32,26 @@ void loop() {
   byte seconds, minutes, hours, dayofweek, day, month, year;
   readTime(&seconds, &minutes, &hours, &dayofweek, &day, &month, &year );
 
-  /////////////////////////////////////////////////////////////
   bool mode = digitalRead(8);               //// button inputs
   bool increment = digitalRead(9);
   bool decrement = digitalRead(10);
   bool set_button = digitalRead(11);
   bool alarm_button = digitalRead(12);
-  /////////////////////////////////////////////////////////////
+
   //add mode button, this button chose the editing variable, minutes,ours or etc.
-  ///////////////////////////////////////////////////////////////
-  if (minutes == 0 and hours == 0){
-    for (int slot=0;slot <5;slot++){
+
+  if (minutes == 0 and hours == 0) {
+    for (int slot = 0; slot < 5; slot++) {
       manual_stop[slot] = 1;// renew alarms everyday
     }
   }
   if (alarm_button == 1 and isalarmblinking == 0) { //enter alarm set process
     alarm_mode = 1;
-    alarm_stop = 1;
+    alarm_stop = 1; //set button dedicate to alarm set function
   }
   if (alarm_mode == 1) {
 
-    if (alarm_select == 0) {//select the alarm slot among 5 slots
+    if (alarm_select == 0) {//select the alarm slot among 5 slots, if not already selected one
 
       //LCD.clear_all();
       slot_disp(LCD, alarm_slot);
@@ -64,7 +64,7 @@ void loop() {
 
       }
       if (set_button == 1 and alarm_select == 0) {
-        alarm_select = not alarm_select;
+        alarm_select = not alarm_select;// select the selected slot to edit
       }
     }
 
@@ -72,7 +72,7 @@ void loop() {
       LCD.clear_all();
       alarm_disp(LCD, alarm_min[alarm_slot], alarm_hour[alarm_slot]);
 
-      if (mode == HIGH) {//edit the chosen time slot
+      if (mode == HIGH) {//editing mode, hours or minutes
         alarm_time = not alarm_time;
       }
 
@@ -107,22 +107,23 @@ void loop() {
       }
 
       if (set_button == 1 and alarm_stop == 1) {  //set the selected alarm slot to the value which is chosen
-        alarm_mode = 0;
-        alarm_stop = 0;
+        alarm_mode = 0;// leave from the alarm mode to normal time mode
+        alarm_stop = 0;// set button function dedicate to alarm set function  
         LCD.clear_all();
-        alarm_select = not alarm_select;
-        manual_stop[alarm_slot] = 1;
+        alarm_select = not alarm_select;// leaving from alarm mode
+        manual_stop[alarm_slot] = 1;// alarm is set, 
+        init_alarm[alarm_slot] = 1;// set a alarm by user
       }
       delay(300);
     }
   }
-  //////////////////////////////////////////////////////////////////////
+
 
   else {
 
     for (int slot = 0; slot < 5; slot++) {
 
-      if (alarm_min[slot] == minutes and alarm_hour[slot] == hours and manual_stop[slot] == 1 ) {// blinking the LED when alarm time come up
+      if (alarm_min[slot] == minutes and alarm_hour[slot] == hours and manual_stop[slot] == 1 and init_alarm[slot] == 1 ) {// blinking the LED when alarm time come up
         current_alarm = slot;// blinking alarm slot
         isalarmblinking = 1;//identify a alarm is blinking
 
@@ -130,7 +131,7 @@ void loop() {
       }
     }
 
-    if (alarm_button == HIGH and isalarmblinking == 1){
+    if (alarm_button == HIGH and isalarmblinking == 1) {
       manual_stop[current_alarm] = 0;//add manual stop feature to current blinking alarm
       isalarmblinking = 0;
     }
@@ -183,7 +184,7 @@ void loop() {
 
       if (mode_status == 5) {//year editing
         year += 1;
-        if(year>99){
+        if (year > 99) {
           year = 0;
         }
       }
@@ -232,7 +233,7 @@ void loop() {
 
       if (mode_status == 5) {
         year -= 1;
-        if(year <0){
+        if (year < 0) {
           year = 99;
         }
       }

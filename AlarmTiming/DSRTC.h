@@ -130,7 +130,7 @@ void DisplayTimeBlink(Set_LCD LCD, int seconds,int minutes,int hours,int dayofwe
 void alarm_disp(Set_LCD LCD,int minutes, int hours){
   LCD.DISP("S");LCD.DISP("E");LCD.DISP("T");LCD.DISP(":");LCD.DISP(" ");
   
-  LCD.DISP(minutes);LCD.DISP(":");LCD.DISP(hours);LCD.DISP(" ");
+  LCD.DISP(hours);LCD.DISP(":");LCD.DISP(minutes);LCD.DISP(" ");
   
   
 }
