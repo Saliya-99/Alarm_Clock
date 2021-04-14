@@ -111,7 +111,7 @@ void loop() {
         alarm_stop = 0;// set button function dedicate to alarm set function  
         LCD.clear_all();
         alarm_select = not alarm_select;// leaving from alarm mode
-        manual_stop[alarm_slot] = 1;// alarm is set, 
+        manual_stop[alarm_slot] = 1;// alarm is set, can stop manually when the alrm is blinking
         init_alarm[alarm_slot] = 1;// set a alarm by user
       }
       delay(300);
